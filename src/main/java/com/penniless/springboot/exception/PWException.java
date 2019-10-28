@@ -31,11 +31,11 @@ public class PWException {
         String.format("%s.%s", entityType.name().toLowerCase(), exceptionType.getValue());
     switch (identifier) {
       case "user.not.found":
-        return "Requested user {0} does not exist.";
-      case "user.not.found.2":
         return "Requested user with id - {0} does not exist.";
+      case "user.not.found.2":
+        return "Requested user with email - {0} does not exist.";
       case "user.duplicate":
-        return "User with name - {0} already exists.";
+        return "User with email - {0} already exists.";
       default:
         return "Other exceptions";
     }
