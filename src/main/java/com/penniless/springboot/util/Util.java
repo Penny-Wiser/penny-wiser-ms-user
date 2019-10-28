@@ -2,12 +2,16 @@ package com.penniless.springboot.util;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-public class PasswordUtil {
+import java.time.Instant;
 
-  public PasswordUtil() {
+public class Util {
+
+  public static String genExternalId() {
+    int now = (int) Instant.now().toEpochMilli();
+    return String.format("SG-%s", Integer.toString(now, 16).toUpperCase());
   }
 
-  public static String saltAndHash(String plainText) {
+  public static String saltAndHashPw(String plainText) {
     return BCrypt.hashpw(plainText, BCrypt.gensalt());
   }
 
