@@ -8,7 +8,7 @@ public class Util {
 
   public static String genExternalId() {
     int now = (int) Instant.now().toEpochMilli();
-    return String.format("SG-%s", Integer.toString(now, 16).toUpperCase());
+    return String.format("UR-%s", Integer.toString(now, 16).toUpperCase());
   }
 
   public static String saltAndHashPw(String plainText) {
