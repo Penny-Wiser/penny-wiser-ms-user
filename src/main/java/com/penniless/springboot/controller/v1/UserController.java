@@ -37,6 +37,11 @@ public class UserController {
     return ResponseEntity.ok().body(userService.getUserById(externalId));
   }
 
+  @GetMapping("/{email}")
+  public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
+    return ResponseEntity.ok().body(userService.getUserByEmail(email));
+  }
+
   @PostMapping("/register")
   public ResponseEntity registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
     // should hashing be done in this layer?

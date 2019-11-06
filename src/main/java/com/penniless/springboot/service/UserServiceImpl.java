@@ -18,6 +18,7 @@ import java.util.Optional;
 import static com.penniless.springboot.exception.EntityType.USER;
 import static com.penniless.springboot.exception.ExceptionType.DUPLICATE_ENTITY;
 import static com.penniless.springboot.exception.ExceptionType.ENTITY_NOT_FOUND;
+import static com.penniless.springboot.exception.ExceptionType.ENTITY_NOT_FOUND_2;
 
 @Service
 @Getter @Setter
@@ -40,6 +41,13 @@ public class UserServiceImpl implements UserService {
     }
 
     throw exception(USER, ENTITY_NOT_FOUND, String.valueOf(externalId));
+  }
+
+  public UserDto getUserByEmail(String email) {
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> exception(USER, ENTITY_NOT_FOUND_2, email));
+
+    return UserMapper.toUserDto(user);
   }
 
   public UserDto registerNewUser(UserDto userDto) {
