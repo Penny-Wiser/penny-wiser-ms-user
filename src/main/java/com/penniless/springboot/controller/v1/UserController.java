@@ -20,7 +20,7 @@ public class UserController {
 
   private UserService userService;
 
-  public UserController(final UserService userService) {
+  public UserController(UserService userService) {
     this.userService = userService;
   }
 
@@ -37,7 +37,7 @@ public class UserController {
     return ResponseEntity.ok().body(userService.getUserById(externalId));
   }
 
-  @GetMapping("/{email}")
+  @GetMapping("email/{email}")
   public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
     return ResponseEntity.ok().body(userService.getUserByEmail(email));
   }

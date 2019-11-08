@@ -70,6 +70,8 @@ public class UserServiceImpl implements UserService {
       newUser.setLastName(userDto.getLastName());
     }
 
+    System.out.println(Util.createToken(newUser.getEmail(), newUser.getExternalId()));
+
     // Handle db errors
     return UserMapper.toUserDto(userRepository.save(newUser));
   }
