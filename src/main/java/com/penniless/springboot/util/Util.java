@@ -1,6 +1,5 @@
 package com.penniless.springboot.util;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -29,7 +28,6 @@ public class Util {
 
     return Jwts.builder()
         .setSubject(username)
-        .setIssuer("Jesus")
         .setIssuedAt(now)
         .setExpiration(new Date(now.getTime() + 10 * 60 * 1000))
         .claim("ext_id", externalId)

@@ -6,6 +6,7 @@ import com.penniless.springboot.model.dto.UpdateUserDto;
 import com.penniless.springboot.model.request.DeleteUserRequest;
 import com.penniless.springboot.model.request.RegisterUserRequest;
 import com.penniless.springboot.model.request.UpdateUserRequest;
+import com.penniless.springboot.model.response.RegisterUserResponse;
 import com.penniless.springboot.service.UserService;
 import com.penniless.springboot.util.UserMapper;
 import com.penniless.springboot.util.Util;
@@ -52,8 +53,12 @@ public class UserController {
         .setLastName(registerUserRequest.getLastName())
         .setPassword(hashedPassword);
 
+    UserDto newUser = userService.registerNewUser(userDto);
+    String jwt = Util.createToken(newUser.getEmail(), newUser.getExternalId());
+
     // TODO:: authenticate and login after register
-    return ResponseEntity.ok().body(userService.registerNewUser(userDto));
+    RegisterUserResponse res = new RegisterUserResponse().setUser(newUser).setAccessToken(jwt);
+    return ResponseEntity.ok().body(res);
   }
 
   @PostMapping("/update")
