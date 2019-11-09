@@ -1,5 +1,6 @@
 package com.penniless.springboot.security.jwt;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 @Component
+@Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
 
   private JwtTokenProvider jwtTokenProvider;

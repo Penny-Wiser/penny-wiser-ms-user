@@ -8,8 +8,7 @@ import com.penniless.springboot.model.dto.UserDto;
 import com.penniless.springboot.model.dto.UpdateUserDto;
 import com.penniless.springboot.util.UserMapper;
 import com.penniless.springboot.util.Util;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import static com.penniless.springboot.exception.ExceptionType.ENTITY_NOT_FOUND;
 import static com.penniless.springboot.exception.ExceptionType.ENTITY_NOT_FOUND_2;
 
 @Service
-@Getter @Setter
+@Slf4j
 public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
@@ -35,17 +34,21 @@ public class UserServiceImpl implements UserService {
   }
 
   public UserDto getUserById(String externalId) {
-    Optional<User> user = userRepository.findByExternalId(externalId);
-    if (user.isPresent()) {
-      return UserMapper.toUserDto(user.get());
-    }
+    User user = userRepository.findByExternalId(externalId)
+        .orElseThrow(() -> {
+          log.error("Unable to find user with externalId: {}", externalId);
+          throw exception(USER, ENTITY_NOT_FOUND, String.valueOf(externalId));
+        });
 
-    throw exception(USER, ENTITY_NOT_FOUND, String.valueOf(externalId));
+    return UserMapper.toUserDto(user);
   }
 
   public UserDto getUserByEmail(String email) {
     User user = userRepository.findByEmail(email)
-        .orElseThrow(() -> exception(USER, ENTITY_NOT_FOUND_2, email));
+        .orElseThrow(() -> {
+          log.error("Failed to retrieve user with email: {}", email);
+          throw exception(USER, ENTITY_NOT_FOUND_2, email);
+        });
 
     return UserMapper.toUserDto(user);
   }
@@ -53,6 +56,7 @@ public class UserServiceImpl implements UserService {
   public UserDto registerNewUser(UserDto userDto) {
     Optional<User> persistentUser = userRepository.findByEmail(userDto.getEmail());
     if (persistentUser.isPresent()) {
+      log.error("User with email: {} already exist.", userDto.getEmail());
       throw exception(USER, DUPLICATE_ENTITY, userDto.getEmail());
     }
 
@@ -70,19 +74,21 @@ public class UserServiceImpl implements UserService {
       newUser.setLastName(userDto.getLastName());
     }
 
-    // Handle db errors
+    log.info("Created new user: {}", newUser);
     return UserMapper.toUserDto(userRepository.save(newUser));
   }
 
   public UserDto updateUser(UpdateUserDto updateUserDto) {
-    Optional<User> persistentUser = userRepository.findByExternalId(updateUserDto.getExternalId());
-    if (!persistentUser.isPresent()) {
-      throw exception(USER, ENTITY_NOT_FOUND, updateUserDto.getExternalId());
-    }
+    User user = userRepository.findByExternalId(updateUserDto.getExternalId())
+        .orElseThrow(() -> {
+          log.error("Failed to find user with externalId: {}", updateUserDto.getExternalId());
+          throw exception(USER, ENTITY_NOT_FOUND, updateUserDto.getExternalId());
+        });
 
-    User user = persistentUser.get();
     updateUser(user, updateUserDto.getFirstName(), updateUserDto.getLastName(), updateUserDto.getEmail());
-    return UserMapper.toUserDto(userRepository.save(user));
+    User updatedUser = userRepository.save(user);
+    log.info("Updated user: {}", user);
+    return UserMapper.toUserDto(updatedUser);
   }
 
   // is there a better way to do this?
@@ -99,15 +105,15 @@ public class UserServiceImpl implements UserService {
   }
 
   public UserDto deleteUser(DeleteUserDto deleteUserDto) {
-    Optional<User> persistentUser = userRepository.findByExternalId(deleteUserDto.getExternalId());
-    if (!persistentUser.isPresent()) {
-      throw exception(USER, ENTITY_NOT_FOUND,deleteUserDto.getExternalId());
-    }
-
+    User user = userRepository.findByExternalId(deleteUserDto.getExternalId())
+        .orElseThrow(() -> {
+          log.error("Failed to find user with externalId: {}", deleteUserDto.getExternalId());
+          throw exception(USER, ENTITY_NOT_FOUND,deleteUserDto.getExternalId());
+        });
     // user can only be deleted if there are no outstanding bills
 
-    User user = persistentUser.get();
     userRepository.deleteById(user.getId());
+    log.info("Deleted user: {}", user);
     return UserMapper.toUserDto(user);
   }
 
