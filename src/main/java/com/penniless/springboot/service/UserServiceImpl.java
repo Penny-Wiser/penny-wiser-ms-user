@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
   }
 
   public UserDto getUserByEmail(String email) {
-    User user = userRepository.findByEmail(email)
+    User user = userRepository.findByEmail(email.toLowerCase())
         .orElseThrow(() -> {
           log.error("Failed to retrieve user with email: {}", email);
           throw exception(USER, ENTITY_NOT_FOUND_2, email);
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     User newUser = new User()
         .setExternalId(extId)
-        .setEmail(userDto.getEmail())
+        .setEmail(userDto.getEmail().toLowerCase())
         .setFirstName(userDto.getFirstName())
         .setPassword(userDto.getPassword());
 
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
       user.setLastName(lastName);
     }
     if (email != null) {
-      user.setEmail(email);
+      user.setEmail(email.toLowerCase());
     }
   }
 
