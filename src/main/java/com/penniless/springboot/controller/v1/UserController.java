@@ -45,7 +45,6 @@ public class UserController {
 
   @PostMapping("/register")
   public ResponseEntity registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
-    // should hashing be done in this layer?
     String hashedPassword = Util.saltAndHashPw(registerUserRequest.getPassword());
     UserDto userDto = new UserDto()
         .setEmail(registerUserRequest.getEmail())
@@ -74,7 +73,6 @@ public class UserController {
 
   @DeleteMapping("/delete")
   public ResponseEntity deleteUser(@RequestBody DeleteUserRequest deleteUserRequest) {
-    // TODO:: authentication and authorization
     DeleteUserDto deleteUserDto = new DeleteUserDto()
         .setExternalId(deleteUserRequest.getExternalId())
         .setEmail(deleteUserRequest.getEmail());

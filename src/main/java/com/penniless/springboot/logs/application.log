@@ -1,0 +1,4 @@
+2019-11-09T21:43:06.164 [main] INFO Starting PennyWiserApplication on Chens-MBP with PID 1934 (/Users/ccl/Desktop/pennywiser/target/classes started by ccl in /Users/ccl/Desktop/pennywiser)
+2019-11-09T21:43:06.171 [main] INFO No active profile set, falling back to default profiles: default
+2019-11-09T21:43:08.529 [main] INFO Started PennyWiserApplication in 2.761 seconds (JVM running for 3.461)
+2019-11-09T21:43:08.531 [main] INFO Starting User Service Microservice...

@@ -1,9 +1,8 @@
 package com.penniless.springboot.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,6 +16,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @Accessors(chain = true)
+@ToString
 @Document(collection = "users")
 public class User {
 
