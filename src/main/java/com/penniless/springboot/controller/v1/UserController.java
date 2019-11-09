@@ -6,6 +6,7 @@ import com.penniless.springboot.model.dto.UpdateUserDto;
 import com.penniless.springboot.model.request.DeleteUserRequest;
 import com.penniless.springboot.model.request.RegisterUserRequest;
 import com.penniless.springboot.model.request.UpdateUserRequest;
+import com.penniless.springboot.model.response.RegisterUserResponse;
 import com.penniless.springboot.service.UserService;
 import com.penniless.springboot.util.UserMapper;
 import com.penniless.springboot.util.Util;
@@ -20,7 +21,7 @@ public class UserController {
 
   private UserService userService;
 
-  public UserController(final UserService userService) {
+  public UserController(UserService userService) {
     this.userService = userService;
   }
 
@@ -37,7 +38,7 @@ public class UserController {
     return ResponseEntity.ok().body(userService.getUserById(externalId));
   }
 
-  @GetMapping("/{email}")
+  @GetMapping("email/{email}")
   public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
     return ResponseEntity.ok().body(userService.getUserByEmail(email));
   }
@@ -52,8 +53,12 @@ public class UserController {
         .setLastName(registerUserRequest.getLastName())
         .setPassword(hashedPassword);
 
+    UserDto newUser = userService.registerNewUser(userDto);
+    String jwt = Util.createToken(newUser.getEmail(), newUser.getExternalId());
+
     // TODO:: authenticate and login after register
-    return ResponseEntity.ok().body(userService.registerNewUser(userDto));
+    RegisterUserResponse res = new RegisterUserResponse().setUser(newUser).setAccessToken(jwt);
+    return ResponseEntity.ok().body(res);
   }
 
   @PostMapping("/update")
