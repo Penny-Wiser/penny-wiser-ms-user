@@ -3,5 +3,5 @@
 *.iml
 
 /target/
-src/main/java/com/penniless/springbootlogs/
+src/main/java/com/penniless/springboot/logs/
 .DS_Store
