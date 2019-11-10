@@ -10,13 +10,17 @@ import com.penniless.springboot.model.response.RegisterUserResponse;
 import com.penniless.springboot.service.UserService;
 import com.penniless.springboot.util.UserMapper;
 import com.penniless.springboot.util.Util;
+import com.penniless.springboot.validation.ValidExternalId;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Validated
 public class UserController {
 
   private UserService userService;
@@ -34,7 +38,7 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity getUser(@PathVariable("id") String externalId) {
+  public ResponseEntity getUser(@PathVariable("id") @ValidExternalId String externalId) {
     return ResponseEntity.ok().body(userService.getUserById(externalId));
   }
 
@@ -44,7 +48,7 @@ public class UserController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
+  public ResponseEntity registerUser(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
     String hashedPassword = Util.saltAndHashPw(registerUserRequest.getPassword());
     UserDto userDto = new UserDto()
         .setEmail(registerUserRequest.getEmail())
@@ -61,7 +65,7 @@ public class UserController {
   }
 
   @PostMapping("/update")
-  public ResponseEntity updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
+  public ResponseEntity updateUser(@RequestBody @Valid UpdateUserRequest updateUserRequest) {
     UpdateUserDto updateUserDto = new UpdateUserDto()
         .setExternalId(updateUserRequest.getExternalId())
         .setEmail(updateUserRequest.getEmail())
@@ -72,7 +76,7 @@ public class UserController {
   }
 
   @DeleteMapping("/delete")
-  public ResponseEntity deleteUser(@RequestBody DeleteUserRequest deleteUserRequest) {
+  public ResponseEntity deleteUser(@RequestBody @Valid DeleteUserRequest deleteUserRequest) {
     DeleteUserDto deleteUserDto = new DeleteUserDto()
         .setExternalId(deleteUserRequest.getExternalId())
         .setEmail(deleteUserRequest.getEmail());
