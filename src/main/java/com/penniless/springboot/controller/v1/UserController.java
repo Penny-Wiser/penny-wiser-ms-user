@@ -42,7 +42,7 @@ public class UserController {
     return ResponseEntity.ok().body(userService.getUserById(externalId));
   }
 
-  @GetMapping("email/{email}")
+  @GetMapping("load/{email}")
   public ResponseEntity getUserByEmail(@PathVariable("email") String email) {
     return ResponseEntity.ok().body(userService.getUserByEmail(email));
   }

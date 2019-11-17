@@ -120,4 +120,8 @@ public class UserServiceImpl implements UserService {
   private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {
     return PWException.throwException(entityType, exceptionType, args);
   }
+
+  public String hello() {
+    return "Hello from user service!";
+  }
 }

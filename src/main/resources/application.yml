@@ -1,0 +1,7 @@
+# Zuul
+zuul:
+  routes:
+    billingms:
+      path: /billingms/**
+      sensitiveHeaders:
+      url: http://localhost:9091

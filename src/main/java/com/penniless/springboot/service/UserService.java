@@ -8,6 +8,7 @@ import com.penniless.springboot.model.dto.UpdateUserDto;
 import java.util.List;
 
 public interface UserService {
+  String hello();
   List<User> getAllUsers();
   UserDto getUserById(String externalId);
   UserDto getUserByEmail(String email);
