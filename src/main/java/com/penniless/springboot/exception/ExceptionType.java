@@ -4,7 +4,8 @@ public enum ExceptionType {
   ENTITY_NOT_FOUND("not.found"),
   ENTITY_NOT_FOUND_2("not.found.2"),
   DUPLICATE_ENTITY("duplicate"),
-  ENTITY_EXCEPTION("exception");
+  ENTITY_EXCEPTION("exception"),
+  UNAUTHORIZED("unauthorized");
 
   String value;
 

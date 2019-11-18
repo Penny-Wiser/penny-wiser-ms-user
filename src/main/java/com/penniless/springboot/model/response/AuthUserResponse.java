@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class RegisterUserResponse {
+public class AuthUserResponse {
   private UserDto user;
   private String accessToken;
 }

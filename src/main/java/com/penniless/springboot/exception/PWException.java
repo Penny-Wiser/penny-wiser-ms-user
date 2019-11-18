@@ -6,6 +6,15 @@ public class PWException {
 
   public PWException() {}
 
+  public static RuntimeException throwException(ExceptionType exceptionType) {
+    switch (exceptionType) {
+      case UNAUTHORIZED:
+        return new UnauthorizedException("Unauthorized - Invalid user email or password.");
+      default:
+        return new RuntimeException("Unhandled exception");
+    }
+  }
+
   public static RuntimeException throwException(
       EntityType entityType, ExceptionType exceptionType, String... args) {
     String messageTemplate = getMessageTemplate(entityType, exceptionType);
@@ -51,5 +60,9 @@ public class PWException {
     public DuplicateEntityException(String message) {
       super(message);
     }
+  }
+
+  public static class UnauthorizedException extends RuntimeException {
+    public UnauthorizedException(String message) { super(message); }
   }
 }

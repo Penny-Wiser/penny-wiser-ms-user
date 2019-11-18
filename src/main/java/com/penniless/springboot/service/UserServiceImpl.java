@@ -4,6 +4,7 @@ import com.penniless.springboot.dao.UserRepository;
 import com.penniless.springboot.exception.*;
 import com.penniless.springboot.model.User;
 import com.penniless.springboot.model.dto.DeleteUserDto;
+import com.penniless.springboot.model.dto.LoginDto;
 import com.penniless.springboot.model.dto.UserDto;
 import com.penniless.springboot.model.dto.UpdateUserDto;
 import com.penniless.springboot.util.UserMapper;
@@ -18,6 +19,7 @@ import static com.penniless.springboot.exception.EntityType.USER;
 import static com.penniless.springboot.exception.ExceptionType.DUPLICATE_ENTITY;
 import static com.penniless.springboot.exception.ExceptionType.ENTITY_NOT_FOUND;
 import static com.penniless.springboot.exception.ExceptionType.ENTITY_NOT_FOUND_2;
+import static com.penniless.springboot.exception.ExceptionType.UNAUTHORIZED;
 
 @Service
 @Slf4j
@@ -78,6 +80,21 @@ public class UserServiceImpl implements UserService {
     return UserMapper.toUserDto(userRepository.save(newUser));
   }
 
+  public UserDto login(LoginDto loginDto) {
+    User user = userRepository.findByEmail(loginDto.getEmail().toLowerCase())
+        .orElseThrow(() -> {
+          log.error("Failed to retrieve user with email: {}", loginDto.getEmail());
+          throw exception(USER, ENTITY_NOT_FOUND_2, loginDto.getEmail());
+        });
+
+    boolean isAuthenticated = Util.authenticatePw(loginDto.getPassword(), user.getPassword());
+    if (!isAuthenticated) {
+      throw exception(UNAUTHORIZED);
+    }
+
+    return UserMapper.toUserDto(user);
+  }
+
   public UserDto updateUser(UpdateUserDto updateUserDto) {
     User user = userRepository.findByExternalId(updateUserDto.getExternalId())
         .orElseThrow(() -> {
@@ -115,6 +132,10 @@ public class UserServiceImpl implements UserService {
     userRepository.deleteById(user.getId());
     log.info("Deleted user: {}", user);
     return UserMapper.toUserDto(user);
+  }
+
+  private RuntimeException exception(ExceptionType exceptionType) {
+    return PWException.throwException(exceptionType);
   }
 
   private RuntimeException exception(EntityType entityType, ExceptionType exceptionType, String... args) {

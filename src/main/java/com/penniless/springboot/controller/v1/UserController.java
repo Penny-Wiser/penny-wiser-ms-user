@@ -1,16 +1,19 @@
 package com.penniless.springboot.controller.v1;
 
 import com.penniless.springboot.model.dto.DeleteUserDto;
+import com.penniless.springboot.model.dto.LoginDto;
 import com.penniless.springboot.model.dto.UserDto;
 import com.penniless.springboot.model.dto.UpdateUserDto;
 import com.penniless.springboot.model.request.DeleteUserRequest;
+import com.penniless.springboot.model.request.LoginUserRequest;
 import com.penniless.springboot.model.request.RegisterUserRequest;
 import com.penniless.springboot.model.request.UpdateUserRequest;
-import com.penniless.springboot.model.response.RegisterUserResponse;
+import com.penniless.springboot.model.response.AuthUserResponse;
 import com.penniless.springboot.service.UserService;
 import com.penniless.springboot.util.UserMapper;
 import com.penniless.springboot.util.Util;
 import com.penniless.springboot.validation.ValidExternalId;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Slf4j
 @Validated
 public class UserController {
 
@@ -49,6 +53,7 @@ public class UserController {
 
   @PostMapping("/register")
   public ResponseEntity registerUser(@RequestBody @Valid RegisterUserRequest registerUserRequest) {
+    log.info("Register user with info: {}", registerUserRequest);
     String hashedPassword = Util.saltAndHashPw(registerUserRequest.getPassword());
     UserDto userDto = new UserDto()
         .setEmail(registerUserRequest.getEmail())
@@ -60,7 +65,24 @@ public class UserController {
     String jwt = Util.createToken(newUser.getEmail(), newUser.getExternalId());
 
     // TODO:: authenticate and login after register
-    RegisterUserResponse res = new RegisterUserResponse().setUser(newUser).setAccessToken(jwt);
+    AuthUserResponse res = new AuthUserResponse().setUser(newUser).setAccessToken(jwt);
+    return ResponseEntity.ok().body(res);
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity loginUser(@RequestBody LoginUserRequest loginUserRequest) {
+    LoginDto login = new LoginDto()
+        .setEmail(loginUserRequest.getEmail())
+        .setPassword(loginUserRequest.getPassword());
+
+    // Controller advice should handle unauthorized as 401 instead of default 500 here.
+    // No duplicate login handling.
+    UserDto loggedInUser = userService.login(login);
+    String jwt = Util.createToken(loggedInUser.getEmail(), loggedInUser.getExternalId());
+
+    AuthUserResponse res = new AuthUserResponse()
+        .setAccessToken(jwt)
+        .setUser(loggedInUser);
     return ResponseEntity.ok().body(res);
   }
 
