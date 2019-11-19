@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/user")
 @Slf4j
 @Validated
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
   private UserService userService;
