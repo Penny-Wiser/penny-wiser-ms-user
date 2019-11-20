@@ -18,6 +18,13 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -80,6 +87,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.10.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Penny-Wiser</groupId>
+            <artifactId>penny-wiser-common</artifactId>
+            <version>55a63079e9</version>
         </dependency>
     </dependencies>
     <build>
