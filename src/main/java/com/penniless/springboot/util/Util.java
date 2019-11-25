@@ -2,17 +2,19 @@ package com.penniless.springboot.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 public class Util {
 
   public static String genExternalId() {
-    int now = (int) Instant.now().toEpochMilli();
-    return String.format("UR-%s", Integer.toString(now, 16).toUpperCase());
+    long now = Instant.now().toEpochMilli();
+    return String.format("UR-%s", Long.toString(now, 16).toUpperCase());
   }
 
   public static String saltAndHashPw(String plainText) {
